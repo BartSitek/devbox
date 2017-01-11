@@ -13,4 +13,4 @@ Follow the list below:
 6. You can now get rid of all your dev deps on the host machine as they are now living in your devboxes. It's quite magical! 🌈
 
 ## Credits 💖
-(https://github.com/dchapde/)[dchapde] - for some insightful ideas and brainstorming sessions
+[dchapde](https://github.com/dchapde/) - for some insightful ideas and brainstorming sessions
