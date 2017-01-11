@@ -3,7 +3,9 @@ Free your Host System of unnecessary dependency clutter.
 
 ## Quick Start 🏁
 
-Follow the list below:
+Make sure you have installed tools like [Docker](https://github.com/docker/docker) and [Docker Compose](https://github.com/docker/compose).
+
+...then follow the list below:
 
 1. Clone this repo somewhere locally and enter that directory.
 2. Run installer `source installer.sh`.
