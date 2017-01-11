@@ -11,3 +11,6 @@ Follow the list below:
 4. `devbox up` and you are up and running.
 5. Eg. if you are using *railsbox* just run commands in the project dir prepending them with `db`, like so `db rails server`.
 6. You can now get rid of all your dev deps on the host machine as they are now living in your devboxes. It's quite magical! 🌈
+
+## Credits 💖
+(https://github.com/dchapde/)[dchapde] - for some insightful ideas and brainstorming sessions
