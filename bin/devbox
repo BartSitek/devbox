@@ -1,0 +1,73 @@
+#!/bin/bash
+
+#                  ,$$$$$',$$$$$',$$$$$'
+#                 ,$$$$$',$$$$$',$$$$$'           - - -- ---- ✈
+#                ,$$$$$',$$$$$',$$$$$'   ᕦ(ò_óˇ)ᕤ いきましょう！
+#               ,s$$$$',$$$$$',$$$$$'
+#              ,$$$$$',$$$$$',$$$$$'       SΙΤΞΚ SYSTΞMS ©1985
+#             ,$$$$$',$$$$$',$$$$$'
+
+#             Disclaimer: This SOFTWARE PRODUCT is provided
+#             by THE PROVIDER "as is", with all faults and
+#             without warranty of any kind.
+
+#             SΙΤΞΚ SYSTΞMS ©1985. All rights Reserved.
+
+#///////////////////////////////////////////////////////////////////////////////
+
+function up() {
+  if [ ! -f docker-compose.yml ]; then
+    echo "Oops! \`docker-compose.yml\` not found"
+    echo "Try importing template using \`devbox init\` first"
+    exit 1
+  fi
+
+  docker-compose up --build -d
+}
+
+function down() {
+  docker-compose stop
+}
+
+function init() {
+  if [ -f docker-compose.yml ]; then
+    echo "Oops! it seems like \`docker-compose.yml\` is already here"
+    exit 1
+  fi
+  cp $DEVBOX_ROOT_PATH/boxes/railsbox/docker-compose.stub.yml ./docker-compose.yml
+  echo "\`docker-compose.yml\` template copied"
+}
+
+function helpmenu() {
+  echo 'help me!'
+}
+
+#///////////////////////////////////////////////////////////////////////////////
+
+#  ARGUMENT LOGIC
+
+#///////////////////////////////////////////////////////////////////////////////
+# http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+# http://wiki.bash-hackers.org/howto/getopts_tutorial
+
+while [ ! $# -eq 0 ]; do
+  case "$1" in
+    help | --help | -h)
+      helpmenu
+      exit
+      ;;
+    up)
+      up
+      exit
+      ;;
+    down)
+      down
+      exit
+      ;;
+    init)
+      init
+      exit
+      ;;
+  esac
+  shift
+done
