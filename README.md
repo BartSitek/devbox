@@ -1,5 +1,5 @@
 Devboxes are portable development environments powered by Docker.  
-Free your Host System of unnecessary clutter.
+Free your Host System of unnecessary dependency clutter.
 
 ## Quick Start
 
