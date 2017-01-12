@@ -22,6 +22,10 @@ echo -e "\n\e[0;36m= Installing devbox =\e[0m\n"
 echo -e "\n\e[0;36m✓ Setting up directories ...\e[0m\n"
 mkdir -p $HOME/.devbox/bin
 
+echo -e "\n\e[0;36m✓ Symlinking commands ...\e[0m\n"
+cp $(pwd)/bin/* $HOME/.devbox/bin/
+ln -s $HOME/.devbox/bin/* /usr/local/bin/
+
 echo -e "\n\e[0;36m✓ Preparing envvars ...\e[0m\n"
 cp devbox.sh $HOME/.devbox/bin/
 echo "export DEVBOX_ROOT_PATH=$(pwd)" > $HOME/.devbox/bin/devbox.sh
