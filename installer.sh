@@ -18,19 +18,19 @@
 # `source installer.sh` to install
 # https://github.com/rcaloras/bash-preexec
 
-echo -e "\n\e[0;36m= Installing devbox =\e[0m\n"
-echo -e "\n\e[0;36m✓ Setting up directories ...\e[0m\n"
+echo -e "\n\e[39m= Installing devbox =\e[0m\n"
+echo -e "\n\e[34m✓ Setting up directories ...\e[0m\n"
 mkdir -p $HOME/.devbox/bin
 
-echo -e "\n\e[0;36m✓ Symlinking commands ...\e[0m\n"
+echo -e "\n\e[34m✓ Symlinking commands ...\e[0m\n"
 cp $(pwd)/bin/* $HOME/.devbox/bin/
 ln -s $HOME/.devbox/bin/* /usr/local/bin/
 
-echo -e "\n\e[0;36m✓ Preparing envvars ...\e[0m\n"
+echo -e "\n\e[34m✓ Preparing envvars ...\e[0m\n"
 cp devbox.sh $HOME/.devbox/bin/
 echo "export DEVBOX_ROOT_PATH=$(pwd)" > $HOME/.devbox/bin/devbox.sh
 
-echo -e "\n\e[0;36m✓ Detecting shell and injecting loader ...\e[0m\n"
+echo -e "\n\e[34m✓ Detecting shell and injecting loader ...\e[0m\n"
 LOADER="[[ -s \"\$HOME/.devbox/bin/devbox.sh\" ]] && source \"\$HOME/.devbox/bin/devbox.sh\" # load devbox"
 SHELLTYPE="$(basename "/$SHELL")"
 
@@ -47,4 +47,4 @@ elif [ "$SHELLTYPE" = "zsh" ]; then
   source $HOME/.zshrc
 fi
 
-echo -e "\n\e[0;36mAll done. Enjoy!\e[0m\n"
+echo -e "\n\e[32m✓ All done. Enjoy!\e[0m\n"
