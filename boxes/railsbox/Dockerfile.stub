@@ -60,12 +60,12 @@ RUN apt-get update && apt-get install -y \
 # Install Ruby & ROR.
 RUN /sbin/setuser devbox gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 RUN /sbin/setuser devbox curl -sSL https://get.rvm.io | /sbin/setuser devbox bash -s stable --rails
+
+RUN echo "rvm_install_on_use_flag=1" >> $HOME/.rvmrc
+RUN echo "rvm_gemset_create_on_use_flag=1=1" >> $HOME/.rvmrc
+
 RUN /sbin/setuser devbox /bin/bash -lc "ruby -v && rails -v"
 RUN /sbin/setuser devbox /bin/bash -lc "gem install bundler --no-ri --no-rdoc"
-
-# Ruby 2.3.1
-RUN /sbin/setuser devbox /bin/bash -lc "rvm install 2.3.1"
-RUN /sbin/setuser devbox /bin/bash -lc "rvm use 2.3.1 && gem install bundler --no-ri --no-rdoc"
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
