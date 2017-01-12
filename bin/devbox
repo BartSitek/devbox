@@ -32,10 +32,15 @@ function down() {
 function init() {
   if [ -f docker-compose.yml ]; then
     echo "Oops! it seems like \`docker-compose.yml\` is already here"
-    exit 1
+  else
+    cp $DEVBOX_ROOT_PATH/boxes/railsbox/docker-compose.stub.yml ./docker-compose.yml
+    echo "\`docker-compose.yml\` template copied"
   fi
-  cp $DEVBOX_ROOT_PATH/boxes/railsbox/docker-compose.stub.yml ./docker-compose.yml
-  echo "\`docker-compose.yml\` template copied"
+
+  if [ ! -f $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile ]; then
+    cp $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile.stub $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile
+    echo "Initial \`Dockerfile\` generated at $DEVBOX_ROOT_PATH/boxes/railsbox/"
+  fi
 }
 
 function helpmenu() {
