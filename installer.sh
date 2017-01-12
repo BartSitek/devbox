@@ -27,8 +27,6 @@ cp devbox.sh $HOME/.devbox/bin/
 echo "export DEVBOX_ROOT_PATH=$(pwd)" > $HOME/.devbox/bin/devbox.sh
 
 echo -e "\n\e[0;36m✓ Detecting shell and injecting loader ...\e[0m\n"
-local LOADER
-local SHELLTYPE
 LOADER="[[ -s \"\$HOME/.devbox/bin/devbox.sh\" ]] && source \"\$HOME/.devbox/bin/devbox.sh\" # load devbox"
 SHELLTYPE="$(basename "/$SHELL")"
 
