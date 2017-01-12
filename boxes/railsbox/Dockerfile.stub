@@ -1,0 +1,74 @@
+#                  ,$$$$$',$$$$$',$$$$$'
+#                 ,$$$$$',$$$$$',$$$$$'           - - -- ---- ✈
+#                ,$$$$$',$$$$$',$$$$$'   ᕦ(ò_óˇ)ᕤ いきましょう！
+#               ,s$$$$',$$$$$',$$$$$'
+#              ,$$$$$',$$$$$',$$$$$'       SΙΤΞΚ SYSTΞMS ©1985
+#             ,$$$$$',$$$$$',$$$$$'
+
+#             Disclaimer: This SOFTWARE PRODUCT is provided
+#             by THE PROVIDER "as is", with all faults and
+#             without warranty of any kind.
+
+#             SΙΤΞΚ SYSTΞMS ©1985. All rights Reserved.
+
+#///////////////////////////////////////////////////////////////////////////////
+
+# https://github.com/phusion/baseimage-docker/blob/master/Changelog.md
+FROM phusion/baseimage:0.9.19
+MAINTAINER Bart Sitek "bart@sitek.me"
+
+# Use baseimage-docker's init process.
+CMD ["/sbin/my_init"]
+
+# Set container envvars.
+ENV HOME /root
+ENV TERM xterm
+ENV DEBIAN_FRONTEND noninteractive
+ENV TIMEZONE Asia/Tokyo
+
+# Set the timezone.
+RUN ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+RUN dpkg-reconfigure tzdata
+
+# Update & Upgrade.
+RUN sed -i "s/archive/jp.archive/" /etc/apt/sources.list
+RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+
+# Install basic deps.
+RUN apt-get update && apt-get install -y \
+    wget \
+    sudo
+
+# Create and configure devbox user.
+RUN useradd --create-home -s /bin/bash devbox
+RUN adduser devbox sudo
+
+# Enable passwordless sudo for the devbox user.
+RUN sed -i.bkp -e \
+      "s/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g" \
+      /etc/sudoers
+
+ENV HOME /home/devbox
+WORKDIR /home/devbox
+
+# Install Postgres extension.
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
+RUN apt-get update && apt-get install -y \
+    postgresql-server-dev-9.6
+
+# Install Ruby & ROR.
+RUN /sbin/setuser devbox gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+RUN /sbin/setuser devbox curl -sSL https://get.rvm.io | /sbin/setuser devbox bash -s stable --rails
+RUN /sbin/setuser devbox /bin/bash -lc "ruby -v && rails -v"
+RUN /sbin/setuser devbox /bin/bash -lc "gem install bundler --no-ri --no-rdoc"
+
+# Ruby 2.3.1
+RUN /sbin/setuser devbox /bin/bash -lc "rvm install 2.3.1"
+RUN /sbin/setuser devbox /bin/bash -lc "rvm use 2.3.1 && gem install bundler --no-ri --no-rdoc"
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Open up port(s).
+EXPOSE 3000
