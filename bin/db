@@ -15,9 +15,9 @@
 
 #///////////////////////////////////////////////////////////////////////////////
 
-DEVBOX_NAME=$(docker-compose ps | grep "Up" | grep rails | awk '{print $1}')
+devbox_name=$(docker-compose ps | grep "Up" | grep rails | awk '{print $1}')
 
-if [ ! -z "$DEVBOX_NAME" ]; then
+if [ ! -z "${devbox_name}" ]; then
   CMD="cd /home/devbox/app; $@"
-  docker exec -it $DEVBOX_NAME /sbin/setuser devbox /bin/bash -lc "$CMD"
+  docker exec -it ${devbox_name} /sbin/setuser devbox /bin/bash -lc "$CMD"
 fi
