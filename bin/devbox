@@ -16,12 +16,47 @@
 #///////////////////////////////////////////////////////////////////////////////
 
 function up() {
-  if [ ! -f docker-compose.yml ]; then
-    echo "Oops! \`docker-compose.yml\` not found"
-    echo "Try importing template using \`devbox init\` first"
+  if [ ! -f Devboxfile ]; then
+    echo -e "\n\033[39m  📦  Oops! Devboxfile not found.\033[0m\n"
+    echo -e "\033[39m---> Generating a sample Devboxfile ...\033[0m\n"
+    cp ${DEVBOX_ROOT_PATH}/boxes/community/railsbox/Devboxfile .
+    echo -e "\033[39m     Edit Devboxfile to your liking then re-run this command.\033[0m\n"
     exit 1
   fi
 
+  if [ ! -f docker-compose.yml ]; then
+    cp ${DEVBOX_ROOT_PATH}/boxes/community/railsbox/docker-compose.yml .
+  fi
+
+  IFS='=' read -ra devbox_file <<< "$(head -n 1 Devboxfile)"
+  box="${devbox_file[0]}"
+  declare -a packets=${devbox_file[1]}
+  box_type="community"
+
+  if [ -d "${DEVBOX_ROOT_PATH}/boxes/custom/${box}" ]; then
+    box_type="custom"
+  fi
+
+  box_path=${DEVBOX_ROOT_PATH}/boxes/${box_type}/${box}
+
+  function getPacketPath() {
+    if [ -f $(echo ${DEVBOX_ROOT_PATH}/packets/community/${1} | sed 's/\/community\//\/custom\//') ]; then
+      echo ${DEVBOX_ROOT_PATH}/packets/community/${1} | sed 's/\/community\//\/custom\//'
+    else
+      echo ${DEVBOX_ROOT_PATH}/packets/community/${1}
+    fi
+  }
+
+  # Generate Dockerfile
+  cat $(getPacketPath alpha.pkt) > ${box_path}/Dockerfile
+  for packet in "${packets[@]}"; do
+    echo -e "" >> ${box_path}/Dockerfile
+    cat $(getPacketPath ${packet}.pkt) >> ${box_path}/Dockerfile
+  done
+  echo -e "" >> ${box_path}/Dockerfile
+  cat $(getPacketPath omega.pkt) >> ${box_path}/Dockerfile
+
+  echo -e "\n\033[39m📦  Launching Devbox ...\033[0m\n"
   docker-compose up --build -d
 }
 
@@ -29,22 +64,14 @@ function down() {
   docker-compose stop
 }
 
-function init() {
-  if [ -f docker-compose.yml ]; then
-    echo "Oops! it seems like \`docker-compose.yml\` is already here"
-  else
-    cp $DEVBOX_ROOT_PATH/boxes/railsbox/docker-compose.stub.yml ./docker-compose.yml
-    echo "\`docker-compose.yml\` template copied"
-  fi
-
-  if [ ! -f $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile ]; then
-    cp $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile.stub $DEVBOX_ROOT_PATH/boxes/railsbox/Dockerfile
-    echo "Initial \`Dockerfile\` generated at $DEVBOX_ROOT_PATH/boxes/railsbox/"
-  fi
+function update() {
+  command -v git >/dev/null 2>&1 || { echo "Git is not installed. Aborting." >&2; exit 1; }
+  echo -e "\n\033[39m📦  Updating Devbox ...\033[0m\n"
+  cd ${DEVBOX_ROOT_PATH} && git pull
 }
 
 function helpmenu() {
-  echo 'help me!'
+  echo "help me!"
 }
 
 #///////////////////////////////////////////////////////////////////////////////
@@ -69,10 +96,15 @@ while [ ! $# -eq 0 ]; do
       down
       exit
       ;;
-    init)
-      init
+    update)
+      update
       exit
       ;;
   esac
   shift
 done
+
+if [ $# -eq 0 ]; then
+  up
+  exit
+fi

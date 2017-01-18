@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #                  ,$$$$$',$$$$$',$$$$$'
 #                 ,$$$$$',$$$$$',$$$$$'           - - -- ---- ✈
 #                ,$$$$$',$$$$$',$$$$$'   ᕦ(ò_óˇ)ᕤ いきましょう！
@@ -18,32 +16,12 @@
 version: '2'
 
 services:
-  postgres:
-    container_name: db
-    image: postgres:9.6
-    volumes:
-      - ~/projects/db_data:/var/lib/postgresql/data
-      - /var/run/postgresql
-    ports:
-      - 5432:5432
-
-  # mysql:
-  #   container_name: db
-  #   image: mysql:8
-  #   volumes:
-  #     - ~/projects/db_data:/var/lib/mysql
-  #     - /var/run/mysqld
-  #   ports:
-  #     - 3306:3306
-
-  rails:
+  railsbox:
     image: railsbox
-    build: ${DEVBOX_ROOT_PATH}/boxes/railsbox
+    build: ${DEVBOX_ROOT_PATH}/boxes/community/railsbox
     volumes:
       - .:/home/devbox/app
-    volumes_from:
-      - db
-    external_links:
-      - db
     ports:
       - 3000:3000
+      - 3306:3306
+      - 5432:5432
